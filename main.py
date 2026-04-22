@@ -14,7 +14,7 @@ python -m arcade.examples.starting_template
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Starting Template"
+WINDOW_TITLE = "Rock,Paper,Scissors!"
 
 
 class GameView(arcade.View):
@@ -29,7 +29,15 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        self.background_color = arcade.color.AMAZON
+        self.background_color = arcade.color.GRAY
+
+        self.sprites = arcade.SpriteList()
+        jouer = arcade.Sprite("assets/faceBeard.png", scale=0.4)
+        jouer.position = (400, 400)
+        computer = arcade.Sprite("assets/compy.png", scale=2)
+        computer.position = (880, 400)
+        self.sprites.append(jouer)
+        self.sprites.append(computer)
 
         # If you have sprite lists, you should create them here,
         # and set them to None
@@ -39,15 +47,15 @@ class GameView(arcade.View):
         # Do changes need to restart the game here if you want to support that
         pass
 
+
     def on_draw(self):
         """
         Render the screen.
         """
-
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
-
+        self.sprites.draw()
         # Call draw() on all your sprite lists below
 
     def on_update(self, delta_time):
@@ -109,7 +117,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-screen_width = 640
-screen_height = 480
-window_title = "Arcade?"

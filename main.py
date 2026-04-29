@@ -32,13 +32,12 @@ class GameView(arcade.View):
         self.background_color = arcade.color.GRAY
 
         self.sprites = arcade.SpriteList()
-        jouer = arcade.Sprite("assets/faceBeard.png", scale=0.4)
+        jouer = arcade.Sprite("assets/faceBeard.png", scale=0.5)
         jouer.position = (400, 400)
-        computer = arcade.Sprite("assets/compy.png", scale=2)
+        computer = arcade.Sprite("assets/compy.png", scale=2.5)
         computer.position = (880, 400)
         self.sprites.append(jouer)
         self.sprites.append(computer)
-
         # If you have sprite lists, you should create them here,
         # and set them to None
 
@@ -56,6 +55,14 @@ class GameView(arcade.View):
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
         self.sprites.draw()
+        arcade.draw_lrbt_rectangle_outline(200, 300, 150, 250, arcade.color.WHITE)
+        arcade.draw_lrbt_rectangle_outline(350, 450, 150, 250, arcade.color.WHITE)
+        arcade.draw_lrbt_rectangle_outline(500, 600, 150, 250, arcade.color.WHITE)
+        arcade.draw_lrbt_rectangle_outline(830, 930, 150, 250, arcade.color.YELLOW)
+        title = arcade.Text("ROCHE PAPIER CISEAUX", 340, 600, arcade.color.BLACK, font_size=45)
+        title.draw()
+        points = arcade.Text("Pointage de Jouer:", 100, 100, arcade.color.DARK_BLUE, font_size=20)
+        points.draw()
         # Call draw() on all your sprite lists below
 
     def on_update(self, delta_time):

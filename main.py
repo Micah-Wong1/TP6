@@ -38,6 +38,7 @@ class GameView(arcade.View):
         computer.position = (880, 400)
         self.sprites.append(jouer)
         self.sprites.append(computer)
+        self.gamestate = GameSystem(1)
         # If you have sprite lists, you should create them here,
         # and set them to None
 
@@ -80,7 +81,8 @@ class GameView(arcade.View):
         For a full list of keys, see:
         https://api.arcade.academy/en/latest/arcade.key.html
         """
-        pass
+        if key == arcade.key.SPACE:
+            self.gamestate = 2
 
     def on_key_release(self, key, key_modifiers):
         """

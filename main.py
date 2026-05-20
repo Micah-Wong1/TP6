@@ -1,6 +1,7 @@
 import arcade
 import random
 from game_state import GameSystem
+from attack_animation import AttackAnimation, AttackType
 
 """
 Starting Template
@@ -38,6 +39,22 @@ class GameView(arcade.View):
         computer.position = (880, 400)
         self.sprites.append(jouer)
         self.sprites.append(computer)
+
+        self.rock_list = arcade.SpriteList()
+        self.rock = AttackAnimation(AttackType.ROCK)
+        self.rock.position = (250, 200)
+        self.rock_list.append(self.rock)
+
+        self.paper_list = arcade.SpriteList()
+        self.paper = AttackAnimation(AttackType.PAPER)
+        self.paper.position = (400, 200)
+        self.paper_list.append(self.paper)
+
+        self.scissors_list = arcade.SpriteList()
+        self.scissors = AttackAnimation(AttackType.SCISSORS)
+        self.scissors.position = (550, 200)
+        self.scissors_list.append(self.scissors)
+
         self.gamestate = GameSystem(1)
         # If you have sprite lists, you should create them here,
         # and set them to None
@@ -47,7 +64,6 @@ class GameView(arcade.View):
         # Do changes need to restart the game here if you want to support that
         pass
 
-
     def on_draw(self):
         """
         Render the screen.
@@ -56,6 +72,9 @@ class GameView(arcade.View):
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
         self.sprites.draw()
+        self.rock_list.draw()
+        self.paper_list.draw()
+        self.scissors_list.draw()
         arcade.draw_lrbt_rectangle_outline(200, 300, 150, 250, arcade.color.WHITE)
         arcade.draw_lrbt_rectangle_outline(350, 450, 150, 250, arcade.color.WHITE)
         arcade.draw_lrbt_rectangle_outline(500, 600, 150, 250, arcade.color.WHITE)
@@ -72,7 +91,9 @@ class GameView(arcade.View):
         Normally, you'll call update() on the sprite lists that
         need it.
         """
-        pass
+        self.rock.on_update()
+        self.paper.on_update()
+        self.scissors.on_update()
 
     def on_key_press(self, key, key_modifiers):
         """

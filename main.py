@@ -43,16 +43,17 @@ class GameView(arcade.View):
         self.rock_list = arcade.SpriteList()
         self.rock = AttackAnimation(AttackType.ROCK)
         self.rock.position = (250, 200)
-        self.rock_list.append(self.rock)
 
         self.paper_list = arcade.SpriteList()
         self.paper = AttackAnimation(AttackType.PAPER)
         self.paper.position = (400, 200)
-        self.paper_list.append(self.paper)
 
         self.scissors_list = arcade.SpriteList()
         self.scissors = AttackAnimation(AttackType.SCISSORS)
         self.scissors.position = (550, 200)
+
+        self.rock_list.append(self.rock)
+        self.paper_list.append(self.paper)
         self.scissors_list.append(self.scissors)
 
         self.gamestate = GameSystem(1)

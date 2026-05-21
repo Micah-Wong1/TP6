@@ -10,7 +10,7 @@ class AttackType(Enum):
 
 class AttackAnimation(arcade.Sprite):
     ATTACK_SCALE = 0.7
-    ANIMATION_SPEED = 5.0
+    ANIMATION_SPEED = 3.5
 
     def __init__(self, attack_type):
         super().__init__()

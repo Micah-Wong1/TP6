@@ -88,8 +88,8 @@ class GameView(arcade.View):
         if self.gamestate == GameSystem.ROUND_DONE:
             instructions = arcade.Text("PRESS SPACE TO CONTINUE", 340, 450, arcade.color.BLACK, font_size=35)
             instructions.draw()
-        if self.gamestate == GameSystem.ROUND_DONE:
-            instructions = arcade.Text("PRESS SPACE TO CONTINUE", 340, 450, arcade.color.BLACK, font_size=35)
+        if self.gamestate == GameSystem.GAME_OVER:
+            instructions = arcade.Text("PRESS SPACE TO RESTART", 340, 450, arcade.color.BLACK, font_size=35)
             instructions.draw()
         # Call draw() on all your sprite lists below
 

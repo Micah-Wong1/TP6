@@ -4,13 +4,9 @@ from game_state import GameSystem
 from attack_animation import AttackAnimation, AttackType
 
 """
-Starting Template
-
-Once you have learned how to use classes, you can begin your program with this
-template.
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.starting_template
+Nom: Micah
+Gr: 406
+Ce code cree un jeu de roche, papier, scissaux contre un AI.
 """
 
 WINDOW_WIDTH = 1280
@@ -56,7 +52,9 @@ class GameView(arcade.View):
         self.paper_list.append(self.paper)
         self.scissors_list.append(self.scissors)
 
-        self.gamestate = GameSystem(1)
+        self.player_attack_type = AttackType
+
+        self.gamestate = GameSystem.NOT_STARTED
         # If you have sprite lists, you should create them here,
         # and set them to None
 
@@ -84,6 +82,15 @@ class GameView(arcade.View):
         title.draw()
         points = arcade.Text("Pointage de Jouer:", 100, 100, arcade.color.DARK_BLUE, font_size=20)
         points.draw()
+        if self.gamestate == GameSystem.NOT_STARTED:
+            instructions = arcade.Text("PRESS SPACE TO START", 340, 450, arcade.color.BLACK, font_size=35)
+            instructions.draw()
+        if self.gamestate == GameSystem.ROUND_DONE:
+            instructions = arcade.Text("PRESS SPACE TO CONTINUE", 340, 450, arcade.color.BLACK, font_size=35)
+            instructions.draw()
+        if self.gamestate == GameSystem.ROUND_DONE:
+            instructions = arcade.Text("PRESS SPACE TO CONTINUE", 340, 450, arcade.color.BLACK, font_size=35)
+            instructions.draw()
         # Call draw() on all your sprite lists below
 
     def on_update(self, delta_time):
@@ -96,6 +103,9 @@ class GameView(arcade.View):
         self.paper.on_update()
         self.scissors.on_update()
 
+        if self.gamestate != GameSystem.ROUND_ACTIVE:
+            return
+
     def on_key_press(self, key, key_modifiers):
         """
         Called whenever a key on the keyboard is pressed.
@@ -103,26 +113,35 @@ class GameView(arcade.View):
         For a full list of keys, see:
         https://api.arcade.academy/en/latest/arcade.key.html
         """
+
         if key == arcade.key.SPACE:
-            self.gamestate = 2
+            if self.gamestate == GameSystem.NOT_STARTED:
+                self.gamestate = GameSystem.ROUND_ACTIVE
 
-    def on_key_release(self, key, key_modifiers):
-        """
-        Called whenever the user lets off a previously pressed key.
-        """
-        pass
+            elif self.gamestate == GameSystem.ROUND_DONE:
+                self.gamestate = GameSystem.NOT_STARTED
 
-    def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """
-        Called whenever the mouse moves.
-        """
-        pass
+            elif self.gamestate == GameSystem.GAME_OVER:
+                self.gamestate == GameSystem.ROUND_ACTIVE
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """
         Called when the user presses a mouse button.
         """
-        pass
+        if self.gamestate != GameSystem.ROUND_ACTIVE:
+            return
+
+        if self.rock.collides_with_point((x, y)):
+            self.player_attack_type = AttackType.ROCK
+            self.gamestate = GameSystem.ROUND_DONE
+
+        elif self.paper.collides_with_point((x, y)):
+            self.player_attack_type = AttackType.PAPER
+            self.gamestate = GameSystem.ROUND_DONE
+
+        elif self.scissors.collides_with_point((x, y)):
+            self.player_attack_type = AttackType.SCISSORS
+            self.gamestate = GameSystem.ROUND_DONE
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         """

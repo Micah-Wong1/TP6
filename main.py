@@ -15,13 +15,6 @@ WINDOW_TITLE = "Rock,Paper,Scissors!"
 
 
 class GameView(arcade.View):
-    """
-    Main application class.
-
-    NOTE: Go ahead and delete the methods you don't need.
-    If you do need a method, delete the 'pass' and replace it
-    with your own code. Don't leave 'pass' in this program.
-    """
 
     def __init__(self):
         super().__init__()
@@ -52,106 +45,182 @@ class GameView(arcade.View):
         self.paper_list.append(self.paper)
         self.scissors_list.append(self.scissors)
 
-        self.player_attack_type = AttackType
+        self.player_attack_type = None
+        self.computer_attack_type = None
 
-        self.gamestate = GameSystem.NOT_STARTED
-        # If you have sprite lists, you should create them here,
-        # and set them to None
+        self.player_score = 0
+        self.computer_score = 0
 
-    def reset(self):
-        """Reset the game to the initial state."""
-        # Do changes need to restart the game here if you want to support that
-        pass
+        self.game_state = GameSystem.NOT_STARTED
 
     def on_draw(self):
         """
-        Render the screen.
+        Afficher l'écran
         """
-        # This command should happen before we start drawing. It will clear
-        # the screen to the background color, and erase what we drew last frame.
+
         self.clear()
         self.sprites.draw()
-        self.rock_list.draw()
-        self.paper_list.draw()
-        self.scissors_list.draw()
+
         arcade.draw_lrbt_rectangle_outline(200, 300, 150, 250, arcade.color.WHITE)
         arcade.draw_lrbt_rectangle_outline(350, 450, 150, 250, arcade.color.WHITE)
         arcade.draw_lrbt_rectangle_outline(500, 600, 150, 250, arcade.color.WHITE)
         arcade.draw_lrbt_rectangle_outline(830, 930, 150, 250, arcade.color.YELLOW)
-        title = arcade.Text("ROCHE PAPIER CISEAUX", 340, 600, arcade.color.BLACK, font_size=45)
+
+        title = arcade.Text("ROCHE PAPIER CISEAUX", 350, 600, arcade.color.BLACK, font_size=45)
         title.draw()
-        points = arcade.Text("Pointage de Jouer:", 100, 100, arcade.color.DARK_BLUE, font_size=20)
-        points.draw()
-        if self.gamestate == GameSystem.NOT_STARTED:
-            instructions = arcade.Text("PRESS SPACE TO START", 340, 450, arcade.color.BLACK, font_size=35)
+
+        player_points = arcade.Text(f"Pointage de Jouer: {self.player_score}", 100, 100,
+                                    arcade.color.DARK_BLUE, font_size=20)
+        player_points.draw()
+
+        comp_points = arcade.Text(f"Pointage de Ordinateur: {self.computer_score}", 700, 100,
+                                  arcade.color.DARK_BLUE, font_size=20)
+        comp_points.draw()
+
+        if self.game_state == GameSystem.NOT_STARTED:
+            instructions = arcade.Text("PRESS SPACE TO START", 400, 500, arcade.color.BLACK, font_size=35)
             instructions.draw()
-        if self.gamestate == GameSystem.ROUND_DONE:
-            instructions = arcade.Text("PRESS SPACE TO CONTINUE", 340, 450, arcade.color.BLACK, font_size=35)
+        elif self.game_state == GameSystem.ROUND_ACTIVE:
+            instructions = arcade.Text("PLAY!", 600, 500, arcade.color.BLACK, font_size=35)
             instructions.draw()
-        if self.gamestate == GameSystem.GAME_OVER:
-            instructions = arcade.Text("PRESS SPACE TO RESTART", 340, 450, arcade.color.BLACK, font_size=35)
+            self.rock.position = (250, 200)
+            self.rock_list.draw()
+
+            self.paper.position = (400, 200)
+            self.paper_list.draw()
+
+            self.scissors.position = (550, 200)
+            self.scissors_list.draw()
+        elif self.game_state == GameSystem.GAME_OVER:
+            if self.player_score < self.computer_score:
+                outcome = arcade.Text("VOUS PERDEZ...", 550, 400, arcade.color.DARK_RED, font_size=20)
+                outcome.draw()
+            elif self.player_score > self.computer_score:
+                outcome = arcade.Text("VOUS GAGNEZ!!!", 550, 400, arcade.color.DARK_RED, font_size=20)
+                outcome.draw()
+            instructions = arcade.Text("APPUYEZ SUR ESPACE POUR RECOMMENCER", 280, 500, arcade.color.BLACK,
+                                       font_size=35)
             instructions.draw()
-        # Call draw() on all your sprite lists below
+        elif self.game_state == GameSystem.ROUND_DONE:
+            instructions = arcade.Text("APPUYEZ SUR ESPACE POUR CONTINUER", 280, 500, arcade.color.BLACK,
+                                       font_size=35)
+            instructions.draw()
+            if self.player_attack_type == self.computer_attack_type:
+                drawchoice = arcade.Text("Match Nul!", 570, 400, arcade.color.DARK_BLUE, font_size=20)
+                drawchoice.draw()
+            elif (self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.SCISSORS or
+                    self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.ROCK or
+                    self.player_attack_type == AttackType.SCISSORS and self.computer_attack_type == AttackType.PAPER):
+                roundwin = arcade.Text("Match Gagné!", 570, 400, arcade.color.DARK_BLUE, font_size=20)
+                roundwin.draw()
+            elif (self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.PAPER or
+                  self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.SCISSORS or
+                  self.player_attack_type == AttackType.SCISSORS and self.computer_attack_type == AttackType.ROCK):
+                roundlost = arcade.Text("Match Perdu!", 570, 400, arcade.color.DARK_BLUE, font_size=20)
+                roundlost.draw()
+
+            if self.player_attack_type == AttackType.ROCK:
+                self.rock.position = (250, 200)
+                self.rock_list.draw()
+
+            if self.player_attack_type == AttackType.PAPER:
+                self.paper.position = (400, 200)
+                self.paper_list.draw()
+
+            if self.player_attack_type == AttackType.SCISSORS:
+                self.scissors.position = (550, 200)
+                self.scissors_list.draw()
+
+            if self.computer_attack_type == AttackType.ROCK:
+                self.rock.position = (880, 200)
+                self.rock_list.draw()
+            if self.computer_attack_type == AttackType.PAPER:
+                self.paper.position = (880, 200)
+                self.paper_list.draw()
+            if self.computer_attack_type == AttackType.SCISSORS:
+                self.scissors.position = (880, 200)
+                self.scissors_list.draw()
 
     def on_update(self, delta_time):
         """
-        All the logic to move, and the game logic goes here.
-        Normally, you'll call update() on the sprite lists that
-        need it.
+        garantit la logique du jeu
         """
         self.rock.on_update()
         self.paper.on_update()
         self.scissors.on_update()
 
-        if self.gamestate != GameSystem.ROUND_ACTIVE:
+        if self.game_state != GameSystem.ROUND_ACTIVE:
             return
+
+        if self.player_attack_type is None:
+            return
+
+        pc_attack = random.randint(0, 2)
+        if pc_attack == 0:
+            self.computer_attack_type = AttackType.ROCK
+        elif pc_attack == 1:
+            self.computer_attack_type = AttackType.PAPER
+        else:
+            self.computer_attack_type = AttackType.SCISSORS
+
+        if self.player_attack_type == self.computer_attack_type:
+            pass
+        elif self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.PAPER:
+            self.computer_score += 1
+        elif self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.SCISSORS:
+            self.player_score += 1
+        elif self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.ROCK:
+            self.player_score += 1
+        elif self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.SCISSORS:
+            self.computer_score += 1
+        elif self.player_attack_type == AttackType.SCISSORS and self.computer_attack_type == AttackType.ROCK:
+            self.computer_score += 1
+        elif self.player_attack_type == AttackType.SCISSORS and self.computer_attack_type == AttackType.PAPER:
+            self.player_score += 1
+
+        self.game_state = GameSystem.ROUND_DONE
+
+        if self.player_score == 3 or self.computer_score == 3:
+            self.game_state = GameSystem.GAME_OVER
 
     def on_key_press(self, key, key_modifiers):
         """
-        Called whenever a key on the keyboard is pressed.
-
-        For a full list of keys, see:
-        https://api.arcade.academy/en/latest/arcade.key.html
+        modifie l'état du jeu via la touche espace
         """
 
         if key == arcade.key.SPACE:
-            if self.gamestate == GameSystem.NOT_STARTED:
-                self.gamestate = GameSystem.ROUND_ACTIVE
+            if self.game_state == GameSystem.NOT_STARTED:
+                self.game_state = GameSystem.ROUND_ACTIVE
 
-            elif self.gamestate == GameSystem.ROUND_DONE:
-                self.gamestate = GameSystem.NOT_STARTED
+            elif self.game_state == GameSystem.ROUND_DONE:
+                self.game_state = GameSystem.ROUND_ACTIVE
+                self.player_attack_type = None
 
-            elif self.gamestate == GameSystem.GAME_OVER:
-                self.gamestate == GameSystem.ROUND_ACTIVE
+            elif self.game_state == GameSystem.GAME_OVER:
+                self.game_state = GameSystem.ROUND_ACTIVE
+                self.player_score = 0
+                self.computer_score = 0
+                self.player_attack_type = None
+                self.computer_attack_type = None
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """
-        Called when the user presses a mouse button.
+        permet de choisir une attaque
         """
-        if self.gamestate != GameSystem.ROUND_ACTIVE:
+        if self.game_state != GameSystem.ROUND_ACTIVE:
             return
 
         if self.rock.collides_with_point((x, y)):
             self.player_attack_type = AttackType.ROCK
-            self.gamestate = GameSystem.ROUND_DONE
 
         elif self.paper.collides_with_point((x, y)):
             self.player_attack_type = AttackType.PAPER
-            self.gamestate = GameSystem.ROUND_DONE
 
         elif self.scissors.collides_with_point((x, y)):
             self.player_attack_type = AttackType.SCISSORS
-            self.gamestate = GameSystem.ROUND_DONE
-
-    def on_mouse_release(self, x, y, button, key_modifiers):
-        """
-        Called when a user releases a mouse button.
-        """
-        pass
 
 
 def main():
-    """ Main function """
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 

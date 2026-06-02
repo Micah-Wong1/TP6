@@ -78,10 +78,11 @@ class GameView(arcade.View):
         comp_points.draw()
 
         if self.game_state == GameSystem.NOT_STARTED:
-            instructions = arcade.Text("PRESS SPACE TO START", 400, 500, arcade.color.BLACK, font_size=35)
+            instructions = arcade.Text("APPUYEZ SUR ESPACE POUR COMMENCER", 280, 500, arcade.color.BLACK,
+                                       font_size=35)
             instructions.draw()
         elif self.game_state == GameSystem.ROUND_ACTIVE:
-            instructions = arcade.Text("PLAY!", 600, 500, arcade.color.BLACK, font_size=35)
+            instructions = arcade.Text("JOUER!", 590, 500, arcade.color.BLACK, font_size=35)
             instructions.draw()
             self.rock.position = (250, 200)
             self.rock_list.draw()
